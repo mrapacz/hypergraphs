@@ -6,7 +6,6 @@ from PIL import Image
 from hypergraphs.productions import P1, P2
 from hypergraphs.utils import get_node_id, IMAGE_PATH, Direction
 
-
 class TestP2(TestCase):
     def setUp(self):
         self.graph = nx.Graph()
