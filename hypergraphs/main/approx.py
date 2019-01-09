@@ -5,7 +5,7 @@ def approx(image: Image, x1, x2, y1, y2, r1, g1, b1, r2, g2, b2, r3, g3, b3, r4,
     diff_r, diff_g, diff_b = None, None, None
 
     for px, py in (x1, x2), (y1, y2):
-        bitmap_r, bitmap_g, bitmap_b = image.convert('RGB').get_pixel((px, py))
+        bitmap_r, bitmap_g, bitmap_b = image.convert('RGB').getpixel((px, py))
 
         diff_r[px][py] = bitmap_r
         diff_r[px][py] = bitmap_g
