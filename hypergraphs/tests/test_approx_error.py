@@ -20,7 +20,7 @@ class aproxtests(TestCase):
 
     def test_green_bitmap(self):
         img = Image.new('RGB', (10, 10), color = (0, 255, 0))
-		error = approx(img, x1, x2, y1, y2, 0, 255, 0, 0, 255, 0, 0, 255, 0, 0, 255, 0)
+        error = approx(img, x1, x2, y1, y2, 0, 255, 0, 0, 255, 0, 0, 255, 0, 0, 255, 0)
         self.assertEqual( error, 0.00)
 
 
