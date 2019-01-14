@@ -4,7 +4,7 @@ from enum import Enum
 import networkx as nx
 from PIL.Image import Image
 
-from utils import get_node_id
+from hypergraphs.utils import get_node_id
 
 
 class Direction(Enum):
