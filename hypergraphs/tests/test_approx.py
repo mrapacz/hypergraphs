@@ -20,4 +20,4 @@ class TestApprox(TestCase):
     def test_preparation(self):
         P1(self.graph, self.x_max_idx, self.y_max_idx, self.image)
         plot(self.graph)
-        # approx(self.image, 0, self.x_max_idx, 0, self.y_max_idx, ???)
+        # approx_error(self.image, 0, self.x_max_idx, 0, self.y_max_idx, ???)
