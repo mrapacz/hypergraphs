@@ -1,11 +1,59 @@
 from PIL import Image
 
+from utils import get_common_nodes
 
-def approx_error(self, image: Image, x1, x2, y1, y2, r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4):
+APPROX_R = None
+APPROX_G = None
+APPROX_B = None
+
+
+def approx_error(self, image: Image, graph, i_hyperedge_id):
+    common_nodes_ids = get_common_nodes(graph, i_hyperedge_id)
+    x1, x2, y1, y2 = -1, -1, -1, -1
+    r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4 = -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+
+    if len(common_nodes_ids) < 2 or len(common_nodes_ids) > 4:
+        raise ValueError('in ApproxError: Invalid graph representation! I hyperedge has connected only 1 common node!')
+    else:
+        x_arr = sorted(set(map(lambda node_id: graph.node[node_id]['x'], common_nodes_ids)))
+        y_arr = sorted(set(map(lambda node_id: graph.node[node_id]['y'], common_nodes_ids)))
+
+        if len(x_arr) != 2 or len(y_arr) != 2:
+            raise ValueError('in ApproxError: Invalid graph representation! Nodes are not orthogonal to each other!')
+
+        x1, x2 = x_arr
+        y1, y2 = y_arr
+
+    for node_id in common_nodes_ids:
+        node = graph.node[node_id]
+        if node['x'] == x1:
+            if node['y'] == y1:
+                r3, g3, b3 = node['r'], node['g'], node['b']
+            else:
+                r1, g1, b1 = node['r'], node['g'], node['b']
+        else:
+            if node['y'] == y1:
+                r4, g4, b4 = node['r'], node['g'], node['b']
+            else:
+                r2, g2, b2 = node['r'], node['g'], node['b']
+
+    if x1 == -1:
+        if y1 == -1:
+            r3, g3, b3 = APPROX_R[x1, y1], APPROX_G[x1, y1], APPROX_B[x1, y1]
+        elif y2 == -1:
+            r1, g1, b1 = APPROX_R[x1, y2], APPROX_G[x1, y2], APPROX_B[x1, y2]
+    elif x2 == -1:
+        if y1 == -1:
+            r4, g4, b4 = APPROX_R[x2, y1], APPROX_G[x2, y1], APPROX_B[x2, y1]
+        elif y2 == -1:
+            r2, g2, b2 = APPROX_R[x2, y2], APPROX_G[x2, y2], APPROX_B[x2, y2]
+
+    if [x1, y1, x2, y2, r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4].__contains__(-1):
+        raise ValueError('in ApproxError: variables x1..y2, r1..b4 contain wrong values')
+
     diff_r, diff_g, diff_b = [], [], []
 
     init_tmp = []
-
     for _ in range(x1, x2 + 1):
         init_tmp.append(0.0)
 

@@ -21,6 +21,11 @@ class Direction(Enum):
 IMAGE_PATH = os.path.join(os.path.dirname(__file__), "tests/test_data", "four_colors.jpg")
 
 
+class HyperEdge(Enum):
+    I = 'I'
+    B = 'B'
+
+
 def get_node_id(node_position: Tuple[int, int]) -> int:
     """
     :param node_position: a tuple containing x and y coordinates of a node
