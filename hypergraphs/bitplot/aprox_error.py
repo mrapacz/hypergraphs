@@ -1,5 +1,6 @@
 import networkx as nx
 
+from PIL.Image import Image
 from typing import Tuple
 from copy import copy, deepcopy
 from utils import get_only_common_nodes
@@ -16,6 +17,15 @@ class AproxError:
         self.DIFF_G = deepcopy(BITMAP_G)
         self.DIFF_B = deepcopy(BITMAP_B)
 
+    @staticmethod
+    def from_image(image: Image):
+        width, height = image.size
+
+        def parse(color: int):
+            return [[image.getpixel((x, y))[color] for x in range(width)] for y in range(height)]
+
+        return AproxError(parse(0), parse(1), parse(2))
+
     def aprox_err_from_graph(self, graph: nx.Graph, i_hyperedge_id, approx: AproxPlot):
         common_nodes_ids = get_only_common_nodes(graph, i_hyperedge_id)
         nodes_num = len(common_nodes_ids)
@@ -24,7 +34,7 @@ class AproxError:
         else:
             def get_rgb(x: int, y: int) -> Tuple[int, int, int]:
                 node_id = get_node_id((x, y))
-                if graph.has_node(id):
+                if node_id in graph.nodes:
                     node = graph.node[node_id]
                     return node['r'], node['g'], node['b']
                 else:
