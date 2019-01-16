@@ -1,18 +1,10 @@
-import os
 from unittest import TestCase
 
 import networkx as nx
 from PIL import Image
 
-from productions import Direction
-from productions import P1
-from productions import P2
-from productions import P3
-from utils import get_node_id
-
-from hypergraphs.plot import plot
-
-IMAGE_PATH = os.path.join(os.path.dirname(__file__), "test_data", "four_colors.jpg")
+from hypergraphs.productions import P1, P2, P3
+from hypergraphs.utils import get_node_id, IMAGE_PATH, Direction
 
 B_DIRECTION_EDGE_LAMBDAS = {
     Direction.N: lambda data, f_data: f_data['x'] == data['x'] and f_data['y'] < data['y'],
@@ -20,6 +12,7 @@ B_DIRECTION_EDGE_LAMBDAS = {
     Direction.E: lambda data, f_data: f_data['x'] < data['x'] and f_data['y'] == data['y'],
     Direction.W: lambda data, f_data: f_data['x'] > data['x'] and f_data['y'] == data['y'],
 }
+
 
 class TestP3(TestCase):
     def setUp(self):
@@ -34,7 +27,8 @@ class TestP3(TestCase):
 
         # plot(self.graph)
 
-        self.hyp_fs = [(x, y) for x, y in self.graph.nodes(data=True) if 'label' in y.keys() and y['label'] in Direction]
+        self.hyp_fs = [(x, y) for x, y in self.graph.nodes(data=True) if
+                       'label' in y.keys() and y['label'] in [d.name for d in Direction]]
         self.hyp_bs = [(x, y) for x, y in self.graph.nodes(data=True) if 'label' in y.keys() and y['label'] == 'B']
         self.hyp_is = [(x, y) for x, y in self.graph.nodes(data=True) if 'label' in y.keys() and y['label'] == 'I']
         self.hyperedges = {
@@ -44,7 +38,7 @@ class TestP3(TestCase):
             Direction.W: {},
         }
         for direction, edges in self.hyperedges.items():
-            edges['f'] = [x for x in self.hyp_fs if x[1]['label'] == direction][0]
+            edges['f'] = [x for x in self.hyp_fs if x[1]['label'] == direction.name][0]
             edges['b'] = [(x, y) for x, y in self.hyp_bs if B_DIRECTION_EDGE_LAMBDAS[direction](y, edges['f'][1])][0]
 
             f_neighbour = list(self.graph.neighbors(edges['f'][0]))[0]
@@ -54,8 +48,9 @@ class TestP3(TestCase):
                 if 'label' in y and y['label'] == 'I':
                     i_neighbours = list(self.graph.neighbors(x))
 
-                    if f_neighbour in i_neighbours and (b_neighbours[0] in i_neighbours or b_neighbours[1] in i_neighbours):
-                        edges['is'].append((x,y))
+                    if f_neighbour in i_neighbours and (
+                            b_neighbours[0] in i_neighbours or b_neighbours[1] in i_neighbours):
+                        edges['is'].append((x, y))
 
         # for direction, edges in self.hyperedges.items():
         #     P3(self.graph, edges['b'][0], [x for x, y in edges['is']], edges['f'][0], self.image)
@@ -67,6 +62,7 @@ class TestP3(TestCase):
         dir_N = self.hyperedges[Direction.N]
         dir_S = self.hyperedges[Direction.S]
         dir_E = self.hyperedges[Direction.E]
+
         def raisingMethod():
             P3(self.graph, dir_S['b'][0], [x for x, y in dir_N['is']], dir_N['f'][0], self.image)
 
@@ -106,7 +102,8 @@ class TestP3(TestCase):
         new_node_id = get_node_id((bx, by))
 
         neighbours = list(self.graph.neighbors(new_node_id))
-        bs = [(x, y) for x, y in self.graph.nodes(data=True) if x in neighbours and 'label' in y.keys() and y['label'] == 'B']
+        bs = [(x, y) for x, y in self.graph.nodes(data=True) if
+              x in neighbours and 'label' in y.keys() and y['label'] == 'B']
         self.assertTrue(len(bs) == 2)
 
     def test_v_connected_with_i_hyperedges(self):
