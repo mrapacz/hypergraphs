@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import networkx as nx
 from PIL import Image
@@ -41,6 +42,26 @@ class TestAproxError(TestCase):
 
     def test_blue_color_aprox_error(self):
         self.__test_bitmap((2, 2), (0, 0, 255))
+
+    def test_invalid_hyperleadge(self):
+        p = AproxError(self.BITMAP_R, self.BITMAP_G, self.BITMAP_B)
+        graph = nx.Graph()
+
+        hyperedge_id = uuid.uuid4()
+        hyperedge_position = 0, 0
+        graph.add_node(
+            hyperedge_id,
+            x=hyperedge_position[0],
+            y=hyperedge_position[1],
+            is_hyperedge=True,
+            label='I',
+            should_break=0,
+        )
+
+        def cos():
+            return p.aprox_err_from_graph(graph, hyperedge_id, AproxPlot(1, 1))
+
+        self.assertRaises(ValueError, cos)
 
     def check_matrix(self, m):
         for i in m:
