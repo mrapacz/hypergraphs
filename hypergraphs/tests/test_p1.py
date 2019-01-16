@@ -3,7 +3,7 @@ from unittest import TestCase
 import networkx as nx
 from PIL import Image
 
-from hypergraphs.productions import P1
+from productions import P1
 
 IMAGE_PATH = os.path.join(os.path.dirname(__file__), "test_data", "four_colors.jpg")
 

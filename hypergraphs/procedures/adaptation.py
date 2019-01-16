@@ -1,8 +1,8 @@
 import networkx as nx
 from PIL import Image
 
-from hypergraphs.productions import Direction, P2
-from hypergraphs.utils import get_node_id
+from productions import Direction, P2
+from utils import get_node_id
 
 
 def calculate_aproximation_error():

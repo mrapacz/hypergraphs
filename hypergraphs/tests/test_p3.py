@@ -4,8 +4,8 @@ from unittest import TestCase
 import networkx as nx
 from PIL import Image
 
-from hypergraphs.productions import Direction, P1, P2, P3
-from hypergraphs.utils import get_node_id
+from productions import Direction, P1, P2, P3
+from utils import get_node_id
 
 IMAGE_PATH = os.path.join(os.path.dirname(__file__), "test_data", "four_colors.jpg")
 

@@ -3,11 +3,11 @@ from unittest import TestCase
 import networkx as nx
 from PIL import Image
 
-from hypergraphs.procedures.adaptation import mark_hyperedges_for_adaptation
-from hypergraphs.productions import P2, P1, Direction
-from hypergraphs.tests.test_p1 import IMAGE_PATH
-from hypergraphs.tests.test_p3 import B_DIRECTION_EDGE_LAMBDAS
-from hypergraphs.utils import get_node_id
+from procedures import mark_hyperedges_for_adaptation
+from productions import P2, P1, Direction
+from tests.test_p1 import IMAGE_PATH
+from tests.test_p3 import B_DIRECTION_EDGE_LAMBDAS
+from utils import get_node_id
 
 
 class TestDrawing(TestCase):
