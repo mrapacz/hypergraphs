@@ -3,6 +3,7 @@ import networkx as nx
 from typing import Tuple
 from copy import copy, deepcopy
 from utils import get_only_common_nodes
+from utils import get_node_id
 from bitplot import AproxPlot
 
 # Zad14
@@ -21,8 +22,29 @@ class AproxError:
         if nodes_num < 2 or nodes_num > 4:
             raise ValueError('Hyperledge has to be connected to at least one node!')
         else:
-            #TODO
-            return self.aprox_err()
+            def get_rgb(x: int, y: int) -> Tuple[int, int, int]:
+                node_id = get_node_id((x, y))
+                if graph.has_node(id):
+                    node = graph.node[node_id]
+                    return (node['r'], node['g'], node['b'])
+                else:
+                    #TODO
+                    pass
+
+            xs = [graph.node[node_id]['x'] for node_id in common_nodes_ids]
+            ys = [graph.node[node_id]['y'] for node_id in common_nodes_ids]
+
+            x1 = min(xs)
+            x2 = max(xs)
+            y1 = min(ys)
+            y2 = max(ys)
+
+            rgb1 = get_rgb(x1, y2)
+            rgb2 = get_rgb(x2, y2)
+            rgb3 = get_rgb(x1, y1)
+            rgb4 = get_rgb(x2, y1)
+
+            return self.aprox_err(x1, y1, x2, y2, rgb1, rgb2, rgb3, rgb4)
 
     def aprox_err(self, x1: int, y1: int, x2: int, y2: int, rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int], rgb3: Tuple[int, int, int], rgb4: Tuple[int, int, int]):
         def update_diffs(x: int, y: int, mul: float, rgb: Tuple[int, int, int]):
