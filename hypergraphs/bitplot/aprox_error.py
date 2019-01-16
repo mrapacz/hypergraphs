@@ -19,8 +19,8 @@ class AproxError:
             self.DIFF_G[x][y] -= rgb[1] * mul
             self.DIFF_B[x][y] -= rgb[2] * mul
 
-        for px in [x1, x2]:
-            for py in [y1, y2]:
+        for px in range(x1, x2 + 1):
+            for py in range(y1, y2 + 1):
                 px1 = (px - x1) / (x2 - x1)
                 py1 = (py - y1) / (y2 - y1)
 
