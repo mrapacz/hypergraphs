@@ -46,6 +46,12 @@ def get_common_nodes(graph, hyperedge_id):
     return [common_node for common_node in graph[hyperedge_id]]
 
 
+def get_only_common_nodes(graph, hyperedge_id):
+    if not graph.node[hyperedge_id]['is_hyperedge']:
+        raise ValueError('Given node_id is not id of hyperedge')
+    return [common_node for common_node in graph[hyperedge_id] if not graph.nodes[common_node]['is_hyperedge']]
+
+
 def get_f1_nodes(graph, common_node_id):
     return __get_x_nodes(graph, common_node_id, Direction.N) + \
            __get_x_nodes(graph, common_node_id, Direction.S)
