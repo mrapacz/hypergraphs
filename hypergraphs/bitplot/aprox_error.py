@@ -26,10 +26,9 @@ class AproxError:
                 node_id = get_node_id((x, y))
                 if graph.has_node(id):
                     node = graph.node[node_id]
-                    return (node['r'], node['g'], node['b'])
+                    return node['r'], node['g'], node['b']
                 else:
-                    #TODO
-                    pass
+                    return approx.APPROX_R[x][y], approx.APPROX_G[x][y], approx.APPROX_B[x][y]
 
             xs = [graph.node[node_id]['x'] for node_id in common_nodes_ids]
             ys = [graph.node[node_id]['y'] for node_id in common_nodes_ids]
