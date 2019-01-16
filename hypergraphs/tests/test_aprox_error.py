@@ -43,7 +43,10 @@ class TestAproxError(TestCase):
     def test_blue_color_aprox_error(self):
         self.__test_bitmap((2, 2), (0, 0, 255))
 
-    def test_invalid_hyperleadge(self):
+    def test_white_color_aprox_error(self):
+        self.__test_bitmap((2, 2), (255, 255, 255))
+
+    def test_invalid_hypereadge(self):
         p = AproxError(self.BITMAP_R, self.BITMAP_G, self.BITMAP_B)
         graph = nx.Graph()
 
@@ -87,4 +90,3 @@ class TestAproxError(TestCase):
 
     def __hyperedges_ids(self, graph: nx.Graph):
         return [node_id for node_id, data in graph.nodes(data=True) if data['is_hyperedge'] and data['label'] == 'I']
-
