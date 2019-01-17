@@ -25,11 +25,13 @@ def P2(graph: nx.Graph, hyperedge_id, image: Image):
     new_depth = old_depth + 1
 
     __add_new_node(graph, image, new_node_id, new_node_position)
-    __add_hypereges_between_nodes(
+    new_i_hyperedges = __add_hypereges_between_nodes(
         graph, hyperedge_id, new_node_id, new_node_position, new_depth)
     __add_direction_hyperedges(
         graph, new_node_id, create_direction_calulcator(old_depth))
     graph.remove_node(hyperedge_id)
+
+    return new_i_hyperedges
 
 
 def __assert_hyper_edge(graph, hyperedge_id):
@@ -54,6 +56,7 @@ def __add_new_node(graph, image, new_node_id, new_node_position):
 
 
 def __add_hypereges_between_nodes(graph, hyperedge_id, new_node_id, new_node_position, new_depth):
+    new_i_hyperedges = []
     hyperedge_neighbour_ids = graph.neighbors(hyperedge_id)
     for neighbour_id in hyperedge_neighbour_ids:
         neighbour = graph.node[neighbour_id]
@@ -67,8 +70,11 @@ def __add_hypereges_between_nodes(graph, hyperedge_id, new_node_id, new_node_pos
             should_break=0,
             depth=new_depth
         )
+        new_i_hyperedges.append(new_hyperedge_id)
         graph.add_edge(new_hyperedge_id, neighbour_id)
         graph.add_edge(new_hyperedge_id, new_node_id)
+
+    return new_i_hyperedges
 
 
 def __add_direction_hyperedges(graph, neighbour_id, direction_calulcators):

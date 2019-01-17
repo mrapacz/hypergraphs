@@ -3,7 +3,7 @@ from PIL.Image import Image
 
 import uuid
 
-from utils import get_node_id, Direction
+from hypergraphs.utils import get_node_id, Direction
 
 
 def P4(graph: nx.Graph, central_hyperedge, image: Image):

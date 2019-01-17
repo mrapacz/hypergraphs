@@ -11,7 +11,6 @@ class HyperEdge(Enum):
     I = 'I'
     B = 'B'
 
-
 class Direction(Enum):
     N = 1
     S = 2
@@ -59,12 +58,25 @@ def get_f2_nodes(graph, common_node_id):
 def get_i_nodes(graph, common_node_id):
     return __get_x_nodes(graph, common_node_id, HyperEdge.I)
 
+def get_b_nodes(graph, common_node_id):
+    return __get_x_nodes(graph, common_node_id, HyperEdge.B)
 
 def __get_x_nodes(graph, common_node_id, label):
     if graph.node[common_node_id]['is_hyperedge']:
         raise ValueError('Given node_id is not id of common node')
     return [x_node for x_node in graph[common_node_id] if graph.nodes[x_node]['label'] == label.name]
 
+def __get_all_x_nodes(graph, label):
+    return [x_node for x_node in graph.nodes if graph.nodes[x_node]['is_hyperedge'] and graph.nodes[x_node]['label'] == label.name]
+
+def __get_all_f2_nodes(graph):
+    return __get_all_x_nodes(graph, Direction.W) + __get_all_x_nodes(graph, Direction.E)
+
+def __get_all_f1_nodes(graph):
+    return __get_all_x_nodes(graph, Direction.N) + __get_all_x_nodes(graph, Direction.S)
+
+def get_all_f_nodes(graph):
+    return __get_all_f1_nodes(graph) + __get_all_f2_nodes(graph)
 
 def common_elements(list1, list2):
     return list(set(list1).intersection(list2))
