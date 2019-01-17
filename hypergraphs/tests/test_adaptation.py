@@ -4,10 +4,10 @@ import networkx as nx
 from PIL import Image
 
 from procedures import mark_hyperedges_for_adaptation
-from productions import P2, P1, Direction
+from productions import P2, P1
 from tests.test_p1 import IMAGE_PATH
 from tests.test_p3 import B_DIRECTION_EDGE_LAMBDAS
-from utils import get_node_id
+from utils import get_node_id, Direction
 
 
 class TestDrawing(TestCase):

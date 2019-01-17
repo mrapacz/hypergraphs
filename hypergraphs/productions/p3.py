@@ -3,7 +3,7 @@ import uuid
 import networkx as nx
 from PIL.Image import Image
 
-from hypergraphs.utils import get_node_id, Direction
+from utils import get_node_id, Direction
 
 
 # hyp_b - B labeled hyperedge id

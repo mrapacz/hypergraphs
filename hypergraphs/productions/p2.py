@@ -3,7 +3,7 @@ import uuid
 import networkx as nx
 from PIL.Image import Image
 
-from hypergraphs.utils import get_node_id, Direction
+from utils import get_node_id, Direction
 
 
 def create_direction_calulcator(depth):

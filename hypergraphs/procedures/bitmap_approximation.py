@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 from PIL import Image
 from networkx import Graph
 
-from hypergraphs.utils import get_node_data
+from utils import get_node_data
 
 COLORING_COEFFICIENT_CALCULATORS = {
     # corner number : function to calculate color coefficient

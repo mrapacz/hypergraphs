@@ -6,7 +6,7 @@ from PIL import Image
 from networkx import Graph
 from parameterized import parameterized
 
-from hypergraphs.plot import plot
+from plot import plot
 from procedures.bitmap_approximation import approximate, draw_approximation
 from productions import P1
 from utils import get_node_id

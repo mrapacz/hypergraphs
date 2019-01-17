@@ -3,8 +3,8 @@ from unittest import TestCase
 import networkx as nx
 from PIL import Image
 
-from hypergraphs.productions import P1, P2, P5
-from hypergraphs.utils import HyperEdge, IMAGE_PATH, Direction
+from productions import P1, P2, P5
+from utils import HyperEdge, IMAGE_PATH, Direction
 
 
 class TestP5(TestCase):
