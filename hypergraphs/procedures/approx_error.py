@@ -1,7 +1,7 @@
-import utils
+import hypergraphs.utils as utils
 from PIL import Image
 
-from utils import get_common_nodes
+from hypergraphs.utils import get_common_nodes
 
 
 def approx_error(self, image: Image, graph, i_hyperedge_id):

@@ -2,10 +2,10 @@ from unittest import TestCase
 
 import networkx as nx
 from PIL import Image
-from procedures import approx_error
-from productions import P1, P2
-import utils
-from utils import HyperEdge, get_common_nodes, init
+from hypergraphs.procedures import approx_error
+from hypergraphs.productions import P1, P2, P5
+import hypergraphs.utils as utils
+from hypergraphs.utils import HyperEdge, Direction, get_common_nodes, init
 
 img_size = (10, 10)
 
@@ -34,16 +34,16 @@ class TestApproxError(TestCase):
         self.y_max_idx = height - 1
         P1(self.graph, self.x_max_idx, self.y_max_idx, self.image)
         i_hyperedges_ids = self.__hyperedges_ids(HyperEdge.I)
-        # P5(self.graph, i_hyperedges_ids[0], self.image)
-        # P2(self.graph, i_hyperedges_ids[0], self.image)
+        P5(self.graph, i_hyperedges_ids[0], self.image)
+        P2(self.graph, i_hyperedges_ids[0], self.image)
         # plot(self.graph)
 
         b_hyperedges_ids = self.__hyperedges_ids(HyperEdge.B)
-        # f1_hyperedges_ids = self.__hyperedges_ids(Direction.N) + self.__hyperedges_ids(Direction.S)
-        # f2_hyperedges_ids = self.__hyperedges_ids(Direction.E) + self.__hyperedges_ids(Direction.W)
+        f1_hyperedges_ids = self.__hyperedges_ids(Direction.N) + self.__hyperedges_ids(Direction.S)
+        f2_hyperedges_ids = self.__hyperedges_ids(Direction.E) + self.__hyperedges_ids(Direction.W)
         self.assertRaises(ValueError, approx_error, self, self.image, self.graph, b_hyperedges_ids[0])
-        # self.assertRaises(ValueError, approx_error, self, self.image, self.graph, f1_hyperedges_ids[0])
-        # self.assertRaises(ValueError, approx_error, self, self.image, self.graph, f2_hyperedges_ids[0])
+        self.assertRaises(ValueError, approx_error, self, self.image, self.graph, f1_hyperedges_ids[0])
+        self.assertRaises(ValueError, approx_error, self, self.image, self.graph, f2_hyperedges_ids[0])
 
         common_node_id = get_common_nodes(self.graph, b_hyperedges_ids[0])[0]
         self.assertRaises(ValueError, approx_error, self, self.image, self.graph, common_node_id)
