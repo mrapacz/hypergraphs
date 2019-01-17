@@ -6,6 +6,10 @@ from networkx import Graph
 
 IMAGE_PATH = os.path.join(os.path.dirname(__file__), "tests/test_data", "four_colors.jpg")
 
+def init():
+    global APPROX_R, APPROX_G, APPROX_B
+    APPROX_R, APPROX_G, APPROX_B = [], [], []
+
 
 class HyperEdge(Enum):
     I = 'I'

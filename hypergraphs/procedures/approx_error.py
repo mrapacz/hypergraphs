@@ -1,10 +1,7 @@
+import utils
 from PIL import Image
 
 from utils import get_common_nodes
-
-APPROX_R = None
-APPROX_G = None
-APPROX_B = None
 
 
 def approx_error(self, image: Image, graph, i_hyperedge_id):
@@ -28,25 +25,23 @@ def approx_error(self, image: Image, graph, i_hyperedge_id):
         node = graph.node[node_id]
         if node['x'] == x1:
             if node['y'] == y1:
-                r3, g3, b3 = node['r'], node['g'], node['b']
-            else:
                 r1, g1, b1 = node['r'], node['g'], node['b']
+            else:
+                r2, g2, b2 = node['r'], node['g'], node['b']
         else:
             if node['y'] == y1:
                 r4, g4, b4 = node['r'], node['g'], node['b']
             else:
-                r2, g2, b2 = node['r'], node['g'], node['b']
+                r3, g3, b3 = node['r'], node['g'], node['b']
 
-    if x1 == -1:
-        if y1 == -1:
-            r3, g3, b3 = APPROX_R[x1, y1], APPROX_G[x1, y1], APPROX_B[x1, y1]
-        elif y2 == -1:
-            r1, g1, b1 = APPROX_R[x1, y2], APPROX_G[x1, y2], APPROX_B[x1, y2]
-    elif x2 == -1:
-        if y1 == -1:
-            r4, g4, b4 = APPROX_R[x2, y1], APPROX_G[x2, y1], APPROX_B[x2, y1]
-        elif y2 == -1:
-            r2, g2, b2 = APPROX_R[x2, y2], APPROX_G[x2, y2], APPROX_B[x2, y2]
+    if r1 == -1:
+        r1, g1, b1 = utils.APPROX_R[y1][x1], utils.APPROX_G[y1][x1], utils.APPROX_B[y1][x1]
+    if r2 == -1:
+        r2, g2, b2 = utils.APPROX_R[y2][x1], utils.APPROX_G[y2][x1], utils.APPROX_B[y2][x1]
+    if r3 == -1:
+        r3, g3, b3 = utils.APPROX_R[y2][x2], utils.APPROX_G[y2][x2], utils.APPROX_B[y2][x2]
+    if r4 == -1:
+        r4, g4, b4 = utils.APPROX_R[y1][x2], utils.APPROX_G[y1][x2], utils.APPROX_B[y1][x2]
 
     if [x1, y1, x2, y2, r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4].__contains__(-1):
         raise ValueError('in ApproxError: variables x1..y2, r1..b4 contain wrong values')
@@ -67,9 +62,9 @@ def approx_error(self, image: Image, graph, i_hyperedge_id):
             img = image.convert('RGB')
             bitmap_r, bitmap_g, bitmap_b = img.getpixel((px, py))
 
-            diff_r[px][py] = bitmap_r
-            diff_g[px][py] = bitmap_g
-            diff_b[px][py] = bitmap_b
+            diff_r[py][px] = bitmap_r
+            diff_g[py][px] = bitmap_g
+            diff_b[py][px] = bitmap_b
 
     for px in range(x1, x2 + 1):
         for py in range(y1, y2 + 1):
@@ -82,16 +77,16 @@ def approx_error(self, image: Image, graph, i_hyperedge_id):
             mul_x_mul_y = mul_x * mul_y
             div_x_mul_y = div_x * mul_y
 
-            diff_r[px][py] -= r1 * mul_x_div_y + r2 * div_x_div_y + r3 * mul_x_mul_y + r4 * div_x_mul_y
-            diff_g[px][py] -= g1 * mul_x_div_y + g2 * div_x_div_y + g3 * mul_x_mul_y + g4 * div_x_mul_y
-            diff_b[px][py] -= b1 * mul_x_div_y + b2 * div_x_div_y + b3 * mul_x_mul_y + b4 * div_x_mul_y
+            diff_r[py][px] -= r1 * mul_x_div_y + r2 * div_x_div_y + r3 * mul_x_mul_y + r4 * div_x_mul_y
+            diff_g[py][px] -= g1 * mul_x_div_y + g2 * div_x_div_y + g3 * mul_x_mul_y + g4 * div_x_mul_y
+            diff_b[py][px] -= b1 * mul_x_div_y + b2 * div_x_div_y + b3 * mul_x_mul_y + b4 * div_x_mul_y
 
     self.error = 0
 
     for px in range(x1, x2 + 1):
         for py in range(y1, y2 + 1):
-            self.error += 0.5 * (diff_r[px][py]) ** 2 \
-                          + 0.3 * (diff_g[px][py]) ** 2 \
-                          + 0.2 * (diff_b[px][py]) ** 2
+            self.error += 0.5 * (diff_r[py][px]) ** 2 \
+                          + 0.3 * (diff_g[py][px]) ** 2 \
+                          + 0.2 * (diff_b[py][px]) ** 2
 
     return round(self.error, 16)
