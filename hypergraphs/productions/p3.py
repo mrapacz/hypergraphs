@@ -3,13 +3,52 @@ import uuid
 import networkx as nx
 from PIL.Image import Image
 
+from hypergraphs.utils import get_node_id, Direction
 
 
 # hyp_b - B labeled hyperedge id
 # hyp_is - I labeled hyperedge_ids
 # hyp_f - F labeled hyperedge_id
-from hypergraphs.utils import get_node_id
-from .p2 import Direction
+
+def P3AutoDetect(graph, hyp_b, image):
+    hyp_b_data = graph.node[hyp_b]
+    b_neighbour_ids = list(graph.neighbors(hyp_b))
+
+    graph.remove_node(hyp_b)
+
+    path = nx.shortest_path(graph, b_neighbour_ids[0], b_neighbour_ids[1])
+
+    if len(path) != 5:
+        raise ValueError(f"P3AutoDetect - wrong number of nodes in path {len(path)}")
+
+    graph.add_node(hyp_b, **hyp_b_data)
+    graph.add_edge(hyp_b, b_neighbour_ids[0])
+    graph.add_edge(hyp_b, b_neighbour_ids[1])
+
+    hyp_is = [x for x in path if 'label' in graph.node[x] and graph.node[x]['label'] == 'I']
+
+    common_i_node = list(set(graph.neighbors(hyp_is[0])) & set(graph.neighbors(hyp_is[1])))[0]
+
+    common_i_node_neighbours = list(graph.neighbors(common_i_node))
+
+    hyp_fs = []
+    for x in common_i_node_neighbours:
+        data = graph.node[x]
+        if 'label' in data and data['label'] in map(lambda x: x.name, list(Direction)):
+            hyp_fs.append(x)
+
+    done = False
+    for hyp_f in hyp_fs:
+        try:
+            P3(graph, hyp_b, hyp_is, hyp_f, image)
+            done = True
+            break
+        except ValueError:
+            print("P3AutoDetect - ValueError handled!")
+
+    if not done:
+        raise ValueError('P3AutoDetect - ValueError not handled')
+
 
 
 def P3(graph: nx.Graph, hyp_b, hyp_is, hyp_f, image: Image):
@@ -31,22 +70,22 @@ def P3(graph: nx.Graph, hyp_b, hyp_is, hyp_f, image: Image):
 
     hyp_f_neighbour_data = graph.node[hyp_f_neighbour_ids[0]]
 
-    if hyp_f_data['label'] == Direction.N:
+    if hyp_f_data['label'] == Direction.N.name:
         if hyp_f_data['x'] != hyp_f_neighbour_data['x'] or hyp_f_data['y'] <= hyp_f_neighbour_data['y']:
             raise ValueError('F hyperedge has weird position')
         if hyp_f_data['x'] != hyp_b_data['x'] or hyp_f_data['y'] >= hyp_b_data['y']:
             raise ValueError('F hyperedge has weird position (B)')
-    elif hyp_f_data['label'] == Direction.S:
+    elif hyp_f_data['label'] == Direction.S.name:
         if hyp_f_data['x'] != hyp_f_neighbour_data['x'] or hyp_f_data['y'] >= hyp_f_neighbour_data['y']:
             raise ValueError('F hyperedge has weird position')
         if hyp_f_data['x'] != hyp_b_data['x'] or hyp_f_data['y'] <= hyp_b_data['y']:
             raise ValueError('F hyperedge has weird position (B)')
-    elif hyp_f_data['label'] == Direction.E:
+    elif hyp_f_data['label'] == Direction.E.name:
         if hyp_f_data['x'] <= hyp_f_neighbour_data['x'] or hyp_f_data['y'] != hyp_f_neighbour_data['y']:
             raise ValueError('F hyperedge has weird position')
         if hyp_f_data['x'] >= hyp_b_data['x'] or hyp_f_data['y'] != hyp_b_data['y']:
             raise ValueError('F hyperedge has weird position (B)')
-    elif hyp_f_data['label'] == Direction.W:
+    elif hyp_f_data['label'] == Direction.W.name:
         if hyp_f_data['x'] >= hyp_f_neighbour_data['x'] or hyp_f_data['y'] != hyp_f_neighbour_data['y']:
             raise ValueError('F hyperedge has weird position')
         if hyp_f_data['x'] <= hyp_b_data['x'] or hyp_f_data['y'] != hyp_b_data['y']:
@@ -68,6 +107,9 @@ def P3(graph: nx.Graph, hyp_b, hyp_is, hyp_f, image: Image):
 
 def __assert_hyper_edge(graph, hyperedge_ids, label=None):
     for hyperedge_id in hyperedge_ids:
+        if not hyperedge_id in graph.nodes:
+            raise ValueError('Given node_id do not exists')
+
         if not graph.node[hyperedge_id]['is_hyperedge']:
             raise ValueError('Given node_id is not id of hyperedge')
 

@@ -1,13 +1,11 @@
-import os
 from unittest import TestCase
 
 import networkx as nx
 from PIL import Image
 
-from productions import Direction, P1, P2, P3
-from utils import get_node_id
-
-IMAGE_PATH = os.path.join(os.path.dirname(__file__), "test_data", "four_colors.jpg")
+from plot import plot
+from productions import P1, P2, P3, P3AutoDetect
+from utils import get_node_id, IMAGE_PATH, Direction
 
 B_DIRECTION_EDGE_LAMBDAS = {
     Direction.N: lambda data, f_data: f_data['x'] == data['x'] and f_data['y'] < data['y'],
@@ -31,7 +29,7 @@ class TestP3(TestCase):
         # plot(self.graph)
 
         self.hyp_fs = [(x, y) for x, y in self.graph.nodes(data=True) if
-                       'label' in y.keys() and y['label'] in Direction]
+                       'label' in y.keys() and y['label'] in [d.name for d in Direction]]
         self.hyp_bs = [(x, y) for x, y in self.graph.nodes(data=True) if 'label' in y.keys() and y['label'] == 'B']
         self.hyp_is = [(x, y) for x, y in self.graph.nodes(data=True) if 'label' in y.keys() and y['label'] == 'I']
         self.hyperedges = {
@@ -41,7 +39,7 @@ class TestP3(TestCase):
             Direction.W: {},
         }
         for direction, edges in self.hyperedges.items():
-            edges['f'] = [x for x in self.hyp_fs if x[1]['label'] == direction][0]
+            edges['f'] = [x for x in self.hyp_fs if x[1]['label'] == direction.name][0]
             edges['b'] = [(x, y) for x, y in self.hyp_bs if B_DIRECTION_EDGE_LAMBDAS[direction](y, edges['f'][1])][0]
 
             f_neighbour = list(self.graph.neighbors(edges['f'][0]))[0]
@@ -56,7 +54,7 @@ class TestP3(TestCase):
                         edges['is'].append((x, y))
 
         # for direction, edges in self.hyperedges.items():
-        #     P3(self.graph, edges['b'][0], [x for x, y in edges['is']], edges['f'][0], self.image)
+        #     P3AutoDetect(self.graph, edges['b'][0], self.image)
         #     plot(self.graph)
         # import ipdb;
         # ipdb.set_trace()
@@ -90,6 +88,11 @@ class TestP3(TestCase):
         self.run_P3(edges)
         self.assertTrue(edges['b'][0] not in self.graph.node)
 
+    def test_b_hyperedge_removed_autodetect(self):
+        edges = self.hyperedges[Direction.N]
+        self.run_P3AutoDetect(edges)
+        self.assertTrue(edges['b'][0] not in self.graph.node)
+
     def test_v_created(self):
         edges = self.hyperedges[Direction.N]
         self.run_P3(edges)
@@ -98,9 +101,28 @@ class TestP3(TestCase):
 
         self.assertTrue(new_node_id in self.graph.node)
 
+    def test_v_created_autodetect(self):
+        edges = self.hyperedges[Direction.N]
+        self.run_P3AutoDetect(edges)
+        bx, by = edges['b'][1]['x'], edges['b'][1]['y']
+        new_node_id = get_node_id((bx, by))
+
+        self.assertTrue(new_node_id in self.graph.node)
+
     def test_v_connected_with_b_hyperedges(self):
         edges = self.hyperedges[Direction.N]
         self.run_P3(edges)
+        bx, by = edges['b'][1]['x'], edges['b'][1]['y']
+        new_node_id = get_node_id((bx, by))
+
+        neighbours = list(self.graph.neighbors(new_node_id))
+        bs = [(x, y) for x, y in self.graph.nodes(data=True) if
+              x in neighbours and 'label' in y.keys() and y['label'] == 'B']
+        self.assertTrue(len(bs) == 2)
+
+    def test_v_connected_with_b_hyperedges_autodetect(self):
+        edges = self.hyperedges[Direction.N]
+        self.run_P3AutoDetect(edges)
         bx, by = edges['b'][1]['x'], edges['b'][1]['y']
         new_node_id = get_node_id((bx, by))
 
@@ -119,9 +141,28 @@ class TestP3(TestCase):
         self.assertTrue(edges['is'][0][0] in neighbours)
         self.assertTrue(edges['is'][1][0] in neighbours)
 
+    def test_v_connected_with_i_hyperedges_autodetect(self):
+        edges = self.hyperedges[Direction.N]
+        self.run_P3AutoDetect(edges)
+        bx, by = edges['b'][1]['x'], edges['b'][1]['y']
+        new_node_id = get_node_id((bx, by))
+
+        neighbours = list(self.graph.neighbors(new_node_id))
+        self.assertTrue(edges['is'][0][0] in neighbours)
+        self.assertTrue(edges['is'][1][0] in neighbours)
+
     def test_v_connected_with_f_hyperedge(self):
         edges = self.hyperedges[Direction.N]
         self.run_P3(edges)
+        bx, by = edges['b'][1]['x'], edges['b'][1]['y']
+        new_node_id = get_node_id((bx, by))
+
+        neighbours = list(self.graph.neighbors(new_node_id))
+        self.assertTrue(edges['f'][0] in neighbours)
+
+    def test_v_connected_with_f_hyperedge_autodetect(self):
+        edges = self.hyperedges[Direction.N]
+        self.run_P3AutoDetect(edges)
         bx, by = edges['b'][1]['x'], edges['b'][1]['y']
         new_node_id = get_node_id((bx, by))
 
@@ -132,3 +173,6 @@ class TestP3(TestCase):
 
     def run_P3(self, edges):
         P3(self.graph, edges['b'][0], [x for x, y in edges['is']], edges['f'][0], self.image)
+
+    def run_P3AutoDetect(self, edges):
+        P3AutoDetect(self.graph, edges['b'][0], self.image)
