@@ -30,8 +30,9 @@ def P6(graph: nx.Graph, hyperedge_id, image: Image):
             if hyperedge_id not in i_hyperedges:
                 for i_hyperedge in i_hyperedges:
                     # P5(graph, i_hyperedge, image)
-                    graph.node[i_hyperedge]['should_break'] = 1
-                    P6(graph, i_hyperedge, image)
+                    if graph.node[i_hyperedge]['should_break'] is 0:
+                        graph.node[i_hyperedge]['should_break'] = 1
+                        P6(graph, i_hyperedge, image)
 
 
 def __check_conditions(graph, hyperedge_id):
