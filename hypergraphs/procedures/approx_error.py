@@ -7,7 +7,7 @@ APPROX_G = None
 APPROX_B = None
 
 
-def approx_error(self, image: Image, graph, i_hyperedge_id):
+def approx_error(image: Image, graph, i_hyperedge_id):
     common_nodes_ids = get_common_nodes(graph, i_hyperedge_id)
     x1, x2, y1, y2 = -1, -1, -1, -1
     r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4 = -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
