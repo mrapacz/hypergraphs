@@ -37,11 +37,12 @@ class Draw:
                 pixels[x, y] = (int(round(self.APPROX_R[x][y])),
                                 int(round(self.APPROX_G[x][y])),
                                 int(round(self.APPROX_B[x][y])))
-        bitmap.save("plik.jpg")
+        #bitmap.save("plik.jpg")
+        bitmap.show()
 
     def get_approx(self):
         return (self.APPROX_R, self.APPROX_G, self.APPROX_B)
 
-d = Draw(0,0,100,100)
-d.approx((255,0,0),(0,255,0),(0,0,255),(255,255,255))
-d.draw()
+# d = Draw(0,0,100,100)
+# d.approx((255,0,0),(0,255,0),(0,0,255),(255,255,255))
+# d.draw()
