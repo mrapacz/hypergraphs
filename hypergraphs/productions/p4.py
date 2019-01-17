@@ -13,7 +13,8 @@ def P4(graph: nx.Graph, central_hyperedge, image: Image):
         run_P4(graph, central_hyperedge, image)
     except Exception:
         graph.clear()
-        graph.add_nodes_from(copy)
+        x = [(k, v) for k, v in copy.nodes(data=True)]
+        graph.add_nodes_from(x)
         graph.add_edges_from(copy.edges)
         raise
 
