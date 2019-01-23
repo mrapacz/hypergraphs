@@ -14,24 +14,47 @@ from utils import get_node_id
 
 
 class TestAproxError(TestCase):
-    def setUp(self):
-        self.BITMAP_R = [
+
+    def test_simple_aprox_error(self):
+        BITMAP_R = [
             [128, 255],
             [128, 255]
         ]
-        self.BITMAP_G = [
+        BITMAP_G = [
             [128, 0],
             [255, 128]
         ]
-        self.BITMAP_B = [
+        BITMAP_B = [
             [128, 128],
             [255, 255]
         ]
-
-    def test_simple_aprox_error(self):
-        p = AproxError(self.BITMAP_R, self.BITMAP_G, self.BITMAP_B)
+        p = AproxError(BITMAP_R, BITMAP_G, BITMAP_B)
 
         result = p.aprox_err(0, 0, 1, 1, (255, 0, 128), (255, 128, 255), (128, 128, 128), (128, 255, 255))
+        self.assertEqual(result, 0.0)
+        self.check_matrix(p.DIFF_R)
+        self.check_matrix(p.DIFF_G)
+        self.check_matrix(p.DIFF_B)
+
+    def test_large_aprox_error(self):
+        BITMAP_R = [
+            [255, 255, 255],
+            [255, 255, 255],
+            [255, 255, 255]
+        ]
+        BITMAP_G = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]
+        BITMAP_B = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]
+        p = AproxError(BITMAP_R, BITMAP_G, BITMAP_B)
+
+        result = p.aprox_err(0, 0, 2, 2, (255, 0, 0), (255, 0, 0), (255, 0, 0), (255, 0, 0))
         self.assertEqual(result, 0.0)
         self.check_matrix(p.DIFF_R)
         self.check_matrix(p.DIFF_G)
@@ -47,7 +70,19 @@ class TestAproxError(TestCase):
         self.__test_bitmap((2, 2), (255, 255, 255))
 
     def test_invalid_hypereadge(self):
-        p = AproxError(self.BITMAP_R, self.BITMAP_G, self.BITMAP_B)
+        BITMAP_R = [
+            [128, 255],
+            [128, 255]
+        ]
+        BITMAP_G = [
+            [128, 0],
+            [255, 128]
+        ]
+        BITMAP_B = [
+            [128, 128],
+            [255, 255]
+        ]
+        p = AproxError(BITMAP_R, BITMAP_G, BITMAP_B)
         graph = nx.Graph()
 
         hyperedge_id = uuid.uuid4()
