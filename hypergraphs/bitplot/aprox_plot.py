@@ -1,6 +1,7 @@
 import networkx as nx
 
 from typing import Tuple
+from PIL import Image
 
 # Zad12
 # Author: Sebastian Haracz
@@ -14,6 +15,14 @@ class AproxPlot:
         self.APPROX_G = [[0.0 for i in range(y)] for j in range(x)]
         self.APPROX_B = [[0.0 for i in range(y)] for j in range(x)]
 
+    def draw(max_x: int, max_y: int):
+        bitmap = Image.new('RGB', [max_x, max_y])
+        pixels = bitmap.load()
+        for x in range(max_x):
+            for y in range(max_y):
+                pixels[x, y] = (round(self.APPROX_R[x][y]), round(self.APPROX_G[x][y]), round(self.APPROX_B[x][y]))
+        bitmap.show()
+        
     def aprox_zad12(self, x1: int, y1: int, x2: int, y2: int, rgb1: Tuple[int, int, int], rgb2: Tuple[int, int, int], rgb3: Tuple[int, int, int], rgb4: Tuple[int, int, int]):
         def update_matrix(x: int, y: int, mul: float, rgb: Tuple[int, int, int]):
             self.APPROX_R[x][y] += rgb[0] * mul
