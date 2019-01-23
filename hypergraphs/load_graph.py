@@ -1,4 +1,4 @@
-from productions import P1, P2, P5
+from productions import P1, P2, P3AutoDetect, P4, P5
 from utils import get_node_id
 from typing import TextIO, Tuple
 from types import SimpleNamespace
@@ -61,6 +61,26 @@ def __execute_production(graph: nx.Graph, prod_num: int, *args):
         hyperedge = next(__get_common_hyperedges(graph, get_node_id((x1, y1)), get_node_id((x2, y2))))
 
         P2(graph, hyperedge, image)
+
+    elif prod_num == 3:
+        x1, y1, x2, y2, r, g, b = args
+
+        image = SimpleNamespace()
+        image.getpixel = Mock(return_value=(r, g, b))
+
+        hyperedge = next(__get_common_hyperedges(graph, get_node_id((x1, y1)), get_node_id((x2, y2))))
+
+        P3AutoDetect(graph, hyperedge, image)
+
+    elif prod_num == 4:
+        x1, y1, x2, y2, r, g, b = args
+
+        image = SimpleNamespace()
+        image.getpixel = Mock(return_value=(r, g, b))
+
+        hyperedge = next(__get_common_hyperedges(graph, get_node_id((x1, y1)), get_node_id((x2, y2))))
+
+        P4(graph, hyperedge, image)
 
     elif prod_num == 5:
         x1, y1, x2, y2 = args
