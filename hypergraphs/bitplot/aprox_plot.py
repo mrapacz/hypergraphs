@@ -9,17 +9,17 @@ from PIL import Image
 
 class AproxPlot:
     def __init__(self, max_x: int, max_y: int):
-        x = max_x + 1
-        y = max_y + 1
-        self.APPROX_R = [[0.0 for i in range(y)] for j in range(x)]
-        self.APPROX_G = [[0.0 for i in range(y)] for j in range(x)]
-        self.APPROX_B = [[0.0 for i in range(y)] for j in range(x)]
+        self.x_size = max_x + 1
+        self.y_size = max_y + 1
+        self.APPROX_R = [[0.0 for i in range(self.y_size)] for j in range(self.x_size)]
+        self.APPROX_G = [[0.0 for i in range(self.y_size)] for j in range(self.x_size)]
+        self.APPROX_B = [[0.0 for i in range(self.y_size)] for j in range(self.x_size)]
 
-    def draw(max_x: int, max_y: int):
-        bitmap = Image.new('RGB', [max_x, max_y])
+    def draw(self):
+        bitmap = Image.new('RGB', (self.x_size, self.y_size))
         pixels = bitmap.load()
-        for x in range(max_x):
-            for y in range(max_y):
+        for x in range(self.x_size):
+            for y in range(self.y_size):
                 pixels[x, y] = (round(self.APPROX_R[x][y]), round(self.APPROX_G[x][y]), round(self.APPROX_B[x][y]))
         bitmap.show()
         
